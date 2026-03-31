@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Advanced Storage dApp</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: linear-gradient(to right, #0f172a, #1e3a8a);
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .card {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 15px;
+      width: 350px;
+      margin: auto;
+      box-shadow: 0px 0px 20px rgba(0,0,0,0.5);
+    }
+
+    button {
+      background: linear-gradient(to right, #3b82f6, #06b6d4);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    #output {
+      margin-top: 10px;
+      font-size: 20px;
+      color: #22c55e;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <h1>🚀 Advanced Storage dApp</h1>
+  <p>Built on Base</p>
+
+  <button onclick="connectWallet()">Connect Wallet</button>
+  <p id="status"></p>
+
+  <br>
+
+  <input type="number" id="valueInput" placeholder="Enter value">
+  <button onclick="setValue()">Set Value</button>
+
+  <br><br>
+
+  <button onclick="increment()">Increment</button>
+  <button onclick="decrement()">Decrement</button>
+  <button onclick="reset()">Reset</button>
+
+  <br><br>
+
+  <button onclick="getValue()">Get Value</button>
+
+  <h3>Value Output:</h3>
+  <p id="output"></p>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
+
+<script>
+let contract;
+let signer;
+
+const contractAddress = "0x890fe4dc547af8c59fedfb70305427766b36c5bc";
+
+const abi = [
+  "function setValue(uint256 _value)",
+  "function increment()",
+  "function decrement()",
+  "function getValue() view returns (uint256)",
+  "function reset()"
+];
+
+async function connectWallet() {
+  if (!window.ethereum) {
+    alert("MetaMask not detected");
+    return;
+  }
+
+  try {
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner();
+
+    contract = new ethers.Contract(contractAddress, abi, signer);
+
+    document.getElementById("status").innerText = "Wallet Connected ✅";
+
+  } catch (error) {
+    console.log(error);
+    alert("Connection failed");
+  }
+}
+
+async function setValue() {
+  const value = document.getElementById("valueInput").value;
+  await contract.setValue(value);
+}
+
+async function increment() {
+  await contract.increment();
+}
+
+async function decrement() {
+  await contract.decrement();
+}
+
+async function reset() {
+  await contract.reset();
+}
+
+async function getValue() {
+  const value = await contract.getValue();
+  document.getElementById("output").innerText = value;
+}
+</script>
+
+</body>
+</html>
