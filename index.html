@@ -55,8 +55,11 @@
 
   <h1>🚀 Advanced Storage dApp</h1>
   <p>Built on Base</p>
-<p>Built by Huzaifa on Base 🔵</p>
+  <p>Built by Huzaifa on Base 🔵</p>
+
   <button onclick="connectWallet()">Connect Wallet</button>
+  <button onclick="disconnectWallet()">Disconnect</button>
+
   <p id="status"></p>
 
   <br>
@@ -117,26 +120,77 @@ async function connectWallet() {
   }
 }
 
+function disconnectWallet() {
+  contract = null;
+  signer = null;
+  document.getElementById("status").innerText = "Wallet Disconnected ❌";
+}
+
 async function setValue() {
-  const value = document.getElementById("valueInput").value;
-  await contract.setValue(value);
+  try {
+    const value = document.getElementById("valueInput").value;
+
+    document.getElementById("status").innerText = "Transaction Pending... ⏳";
+
+    const tx = await contract.setValue(value);
+    await tx.wait();
+
+    document.getElementById("status").innerText = "Success ✅";
+
+  } catch (error) {
+    document.getElementById("status").innerText = "Error ❌";
+  }
 }
 
 async function increment() {
-  await contract.increment();
+  try {
+    document.getElementById("status").innerText = "Transaction Pending... ⏳";
+
+    const tx = await contract.increment();
+    await tx.wait();
+
+    document.getElementById("status").innerText = "Success ✅";
+
+  } catch (error) {
+    document.getElementById("status").innerText = "Error ❌";
+  }
 }
 
 async function decrement() {
-  await contract.decrement();
+  try {
+    document.getElementById("status").innerText = "Transaction Pending... ⏳";
+
+    const tx = await contract.decrement();
+    await tx.wait();
+
+    document.getElementById("status").innerText = "Success ✅";
+
+  } catch (error) {
+    document.getElementById("status").innerText = "Error ❌";
+  }
 }
 
 async function reset() {
-  await contract.reset();
+  try {
+    document.getElementById("status").innerText = "Transaction Pending... ⏳";
+
+    const tx = await contract.reset();
+    await tx.wait();
+
+    document.getElementById("status").innerText = "Success ✅";
+
+  } catch (error) {
+    document.getElementById("status").innerText = "Error ❌";
+  }
 }
 
 async function getValue() {
-  const value = await contract.getValue();
-  document.getElementById("output").innerText = value;
+  try {
+    const value = await contract.getValue();
+    document.getElementById("output").innerText = value;
+  } catch (error) {
+    document.getElementById("status").innerText = "Error ❌";
+  }
 }
 </script>
 
